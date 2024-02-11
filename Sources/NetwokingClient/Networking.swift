@@ -8,10 +8,10 @@ public protocol Networkable {
     @available(macOS 10.15, *)
     func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, HTTPClientError>) -> Void)
     
-    @available(macOS 13.0, *)
+    @available(iOS 13.0, macOS 13.0, *)
     func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, HTTPClientError>
     
-    @available(macOS 12.0, *)
+    @available(iOS 15.0, macOS 12.0, *)
     func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, HTTPClientError>
 }
 
@@ -59,7 +59,7 @@ public class Networking: Networkable {
         }.resume()
     }
     
-    @available(macOS 13.0, *)
+    @available(iOS 13.0, macOS 13.0, *)
     public func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, HTTPClientError> {
         guard let request = constructRequest(for: endpoint) else {
             return Fail(error: HTTPClientError.invalidURL)
@@ -89,7 +89,7 @@ public class Networking: Networkable {
             .eraseToAnyPublisher()
     }
     
-    @available(macOS 12.0, *)
+    @available(iOS 15.0, macOS 12.0, *)
     public func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, HTTPClientError> {
         guard let request = constructRequest(for: endpoint) else {
             return .failure(HTTPClientError.invalidURL)
