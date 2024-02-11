@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftnetworkinglayer",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cjalberto/SwiftNetworkingLayer.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "d2cfec08c9fe5de27996abe9885d35729fd5587c"
+      }
+    }
+  ],
+  "version" : 2
+}
