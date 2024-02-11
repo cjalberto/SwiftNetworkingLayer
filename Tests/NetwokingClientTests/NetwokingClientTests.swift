@@ -58,6 +58,7 @@ final class NetwokingClientTests: XCTestCase {
     }
     
     // Test synchronous request
+    @available(iOS 15.0.0, *)
     func testSyncRequest() async {
         let server = ServerFactory.createServer(for: "test", baseURL: "https://example.com")
         let networking = Networking(provider: server)
