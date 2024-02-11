@@ -1,37 +1,45 @@
 import Foundation
 import Combine
 
+// Protocol to define network operations
 public protocol Networkable {
-    var provider: Server { get }
-    var session: URLSession { get }
+    var provider: Server { get }       // Server provider
+    var session: URLSession { get }    // URLSession for network requests
     
+    // Function to make a network request with completion handler
     @available(macOS 10.15, *)
     func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, HTTPClientError>) -> Void)
     
+    // Function to make a network request using Combine framework
     @available(iOS 13.0, macOS 13.0, *)
     func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, HTTPClientError>
     
+    // Function to make a network request using async-await
     @available(iOS 15.0, macOS 12.0, *)
     func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, HTTPClientError>
 }
 
+// Class implementing Networkable protocol
 public class Networking: Networkable {
-    public let provider: Server
-    public let session: URLSession
+    public let provider: Server    // Server provider
+    public let session: URLSession // URLSession for network requests
     
+    // Initializer
     public init(provider: Server, session: URLSession = .shared) {
         self.provider = provider
         self.session = session
     }
     
+    // Function to make a network request with completion handler
     @available(macOS 10.15, *)
     public func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, HTTPClientError>) -> Void) {
-        
+        // Construct URLRequest
         guard let request = constructRequest(for: endpoint) else {
             completion(.failure(HTTPClientError.invalidURL))
             return
         }
 
+        // Perform data task
         URLSession.shared.dataTask(with: request) { data, response, error in
             if error != nil {
                 completion(.failure(HTTPClientError.noResponse))
@@ -59,6 +67,7 @@ public class Networking: Networkable {
         }.resume()
     }
     
+    // Function to make a network request using Combine framework
     @available(iOS 13.0, macOS 13.0, *)
     public func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, HTTPClientError> {
         guard let request = constructRequest(for: endpoint) else {
@@ -89,6 +98,7 @@ public class Networking: Networkable {
             .eraseToAnyPublisher()
     }
     
+    // Function to make a network request using async-await
     @available(iOS 15.0, macOS 12.0, *)
     public func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, HTTPClientError> {
         guard let request = constructRequest(for: endpoint) else {
@@ -115,6 +125,7 @@ public class Networking: Networkable {
         }
     }
     
+    // Private function to construct URLRequest
     private func constructRequest(for call: any Endpoint) -> URLRequest? {
         guard let url = URL(string: provider.baseURL + call.path)  else {
             return nil
