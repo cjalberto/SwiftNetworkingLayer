@@ -21,6 +21,9 @@ let package = Package(
             name: "NetwokingClient"),
         .testTarget(
             name: "NetwokingClientTests",
-            dependencies: ["NetwokingClient"]),
+            dependencies: ["NetwokingClient"],
+            exclude: ["Example"]
+        ),
+            
     ]
 )
