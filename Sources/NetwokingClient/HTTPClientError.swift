@@ -1,22 +1,17 @@
-//
-//  File.swift
-//  
-//
-//  Created by Carlos Jaramillo on 2/2/24.
-//
 
 import Foundation
 
+// Enumeration representing various HTTP client errors
 public enum HTTPClientError: Error {
-    case invalidURL
-    case requestFailed(statusCode: Int, message: String)
-    case noData
-    case decodingFailed
-    case unauthorized
-    case noResponse
-    case generic
-    // Agrega otros casos según sea necesario
+    case invalidURL                         // The provided URL is not valid
+    case requestFailed(statusCode: Int, message: String)  // The request failed with a specific status code and message
+    case noData                             // No data was received in the response
+    case decodingFailed                     // Error decoding the response data
+    case unauthorized                       // The request requires authentication and none or invalid credentials were provided
+    case noResponse                         // No response was received
+    case generic                            // Unexpected error
     
+    // Computed property to get the error code
     public var errorCode: Int {
         switch self {
         case .invalidURL:
@@ -36,6 +31,7 @@ public enum HTTPClientError: Error {
         }
     }
     
+    // Computed property to get the localized description of the error
     public var localizedDescription: String {
         switch self {
         case .invalidURL:
@@ -55,6 +51,7 @@ public enum HTTPClientError: Error {
         }
     }
     
+    // Function to map status codes to corresponding HTTP client errors
     public static func map(statusCode: Int) -> HTTPClientError {
         switch statusCode {
         case 4001:
