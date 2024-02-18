@@ -3,24 +3,26 @@ import Combine
 
 // Protocol to define network operations
 public protocol Networkable {
+    associatedtype ErrorType: HTTPClientErrorProtocol
+    
     var provider: Server { get }       // Server provider
     var session: URLSession { get }    // URLSession for network requests
     
     // Function to make a network request with completion handler
     @available(macOS 10.15, *)
-    func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, HTTPClientError>) -> Void)
+    func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, ErrorType>) -> Void)
     
     // Function to make a network request using Combine framework
     @available(iOS 13.0, macOS 13.0, *)
-    func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, HTTPClientError>
+    func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, ErrorType>
     
     // Function to make a network request using async-await
     @available(iOS 15.0, macOS 12.0, *)
-    func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, HTTPClientError>
+    func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, ErrorType>
 }
 
 // Class implementing Networkable protocol
-public class Networking: Networkable {
+public class Networking<ErrorType: HTTPClientErrorProtocol>: Networkable {
     public let provider: Server    // Server provider
     public let session: URLSession // URLSession for network requests
     
@@ -32,29 +34,31 @@ public class Networking: Networkable {
     
     // Function to make a network request with completion handler
     @available(macOS 10.15, *)
-    public func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, HTTPClientError>) -> Void) {
-        // Construct URLRequest
+    public func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, ErrorType>) -> Void) {
+        
         guard let request = constructRequest(for: endpoint) else {
-            completion(.failure(HTTPClientError.invalidURL))
+            completion(.failure(ErrorType.map(statusCode: 400))) // Use ErrorType with a generic error or specific one
             return
         }
-
-        // Perform data task
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
-            if error != nil {
-                completion(.failure(HTTPClientError.noResponse))
+            if let _ = error {
+                completion(.failure(ErrorType.map(statusCode: 500))) // Assuming 500 as a generic server error
                 return
             }
 
-            if let httpResponse = response as? HTTPURLResponse {
-                if !(200...299 ~= httpResponse.statusCode) {
-                    completion(.failure(HTTPClientError.map(statusCode: httpResponse.statusCode)))
-                    return
-                }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(ErrorType.map(statusCode: 501))) // No response error
+                return
+            }
+
+            if !(200...299 ~= httpResponse.statusCode) {
+                completion(.failure(ErrorType.map(statusCode: httpResponse.statusCode))) // Use the map function from your ErrorType
+                return
             }
 
             guard let data = data else {
-                completion(.failure(HTTPClientError.noData))
+                completion(.failure(ErrorType.map(statusCode: 421))) // No data error, assuming 204 as an example
                 return
             }
 
@@ -62,66 +66,69 @@ public class Networking: Networkable {
                 let decodedObject = try JSONDecoder().decode(E.requestType.self, from: data)
                 completion(.success(decodedObject))
             } catch {
-                completion(.failure(HTTPClientError.decodingFailed))
+                completion(.failure(ErrorType.map(statusCode: 422))) // Decoding failed error, assuming 422 as an example
             }
         }.resume()
     }
     
     // Function to make a network request using Combine framework
     @available(iOS 13.0, macOS 13.0, *)
-    public func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, HTTPClientError> {
+    public func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, ErrorType> {
         guard let request = constructRequest(for: endpoint) else {
-            return Fail(error: HTTPClientError.invalidURL)
+            // Return a publisher that immediately fails with your custom ErrorType
+            return Fail(error: ErrorType.map(statusCode: 400)) // Invalid URL
                 .eraseToAnyPublisher()
         }
 
         return URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { data, response in
                 guard let httpResponse = response as? HTTPURLResponse else {
-                    throw HTTPClientError.generic
+                    throw ErrorType.map(statusCode: 500) // Assuming 500 represents a generic server error
                 }
 
                 if !(200...299 ~= httpResponse.statusCode) {
-                    throw HTTPClientError.map(statusCode: httpResponse.statusCode)
+                    throw ErrorType.map(statusCode: httpResponse.statusCode) // Use the map function from your ErrorType
                 }
 
                 return data
             }
             .decode(type: E.requestType.self, decoder: JSONDecoder())
-            .mapError { error in
-                if let httpClientError = error as? HTTPClientError {
-                    return httpClientError
+            .mapError { error -> ErrorType in
+                if let error = error as? ErrorType {
+                    return error
                 } else {
-                    return HTTPClientError.decodingFailed
+                    return ErrorType.map(statusCode: 422) // Example for decoding failure
                 }
             }
             .eraseToAnyPublisher()
     }
+
     
     // Function to make a network request using async-await
     @available(iOS 15.0, macOS 12.0, *)
-    public func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, HTTPClientError> {
+    public func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, ErrorType> {
         guard let request = constructRequest(for: endpoint) else {
-            return .failure(HTTPClientError.invalidURL)
+            return .failure(ErrorType.map(statusCode: 400)) // Example: 400 for Bad Request
         }
-
+        
         guard let (data, response) = try? await URLSession.shared.data(for: request) else {
-            return .failure(HTTPClientError.generic)
+            return .failure(ErrorType.map(statusCode: 500))
         }
-
+        
         guard let httpResponse = response as? HTTPURLResponse else {
-            return .failure(HTTPClientError.noResponse)
+            return .failure(ErrorType.map(statusCode: 501)) // Assuming 500 represents a generic server error
         }
 
         if !(200...299 ~= httpResponse.statusCode) {
-            return .failure(HTTPClientError.map(statusCode: httpResponse.statusCode))
+            // Use the injected ErrorType for HTTP status code errors
+            return .failure(ErrorType.map(statusCode: httpResponse.statusCode))
         }
 
         do {
             let decodedObject = try JSONDecoder().decode(E.requestType.self, from: data)
             return .success(decodedObject)
         } catch {
-            return .failure(HTTPClientError.decodingFailed)
+            return .failure(ErrorType.map(statusCode: 422)) // Example: 422 for Unprocessable Entity
         }
     }
     
