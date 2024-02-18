@@ -22,6 +22,7 @@
 		458BAF9D2B788F8C008FEDAC /* BaseUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF9C2B788F8B008FEDAC /* BaseUrl.swift */; };
 		458BAF9F2B78914B008FEDAC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF9E2B78914B008FEDAC /* API.swift */; };
 		45B5BF122B82877400D1FCD9 /* NetwokingClient in Frameworks */ = {isa = PBXBuildFile; productRef = 45B5BF112B82877400D1FCD9 /* NetwokingClient */; };
+		45B5BF142B8287CE00D1FCD9 /* HTTPClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B5BF132B8287CE00D1FCD9 /* HTTPClientError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		458BAF982B788DE8008FEDAC /* Enviroment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enviroment.swift; sourceTree = "<group>"; };
 		458BAF9C2B788F8B008FEDAC /* BaseUrl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseUrl.swift; sourceTree = "<group>"; };
 		458BAF9E2B78914B008FEDAC /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		45B5BF132B8287CE00D1FCD9 /* HTTPClientError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPClientError.swift; path = ../../../../../../../../Desktop/HTTPClientError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +162,7 @@
 		458BAF9A2B788E1F008FEDAC /* Server */ = {
 			isa = PBXGroup;
 			children = (
+				45B5BF132B8287CE00D1FCD9 /* HTTPClientError.swift */,
 				458BAF9C2B788F8B008FEDAC /* BaseUrl.swift */,
 				458BAF982B788DE8008FEDAC /* Enviroment.swift */,
 			);
@@ -315,6 +318,7 @@
 				458BAF952B788CA9008FEDAC /* CriptoCurrencyPriceInfoDTO.swift in Sources */,
 				458BAF8C2B788C8F008FEDAC /* SimpleEndpoint.swift in Sources */,
 				458BAF9D2B788F8C008FEDAC /* BaseUrl.swift in Sources */,
+				45B5BF142B8287CE00D1FCD9 /* HTTPClientError.swift in Sources */,
 				458BAF992B788DE8008FEDAC /* Enviroment.swift in Sources */,
 				458BAF572B788BF4008FEDAC /* apiApp.swift in Sources */,
 				458BAF9F2B78914B008FEDAC /* API.swift in Sources */,
