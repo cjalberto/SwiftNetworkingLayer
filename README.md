@@ -45,6 +45,40 @@ networking.request(endpoint: MyEndpoint()) { result in
     }
 }
 ```
+### Implement Error Handling
+The HTTPClientError enumeration, conforming to HTTPClientErrorProtocol, illustrates an exemplary implementation of detailed error handling. It includes an errorCode property that provides specific HTTP status codes or custom codes for various error scenarios:
+```swift
+public enum HTTPClientError: HTTPClientErrorProtocol {
+    case invalidURL
+    case requestFailed(statusCode: Int, message: String)
+    case noData
+    case decodingFailed
+    case unauthorized
+    case noResponse
+    case generic
+
+    public var errorCode: Int {
+        switch self {
+        case .invalidURL:
+            return 500
+        case .requestFailed(let statusCode, _):
+            return statusCode
+        case .noData:
+            return 421
+        case .decodingFailed:
+            return 422
+        case .unauthorized:
+            return 601
+        case .noResponse:
+            return 501
+        case .generic:
+            return 400
+        }
+    }
+    // Example mappings and descriptions omitted for brevity
+}
+```
+
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
