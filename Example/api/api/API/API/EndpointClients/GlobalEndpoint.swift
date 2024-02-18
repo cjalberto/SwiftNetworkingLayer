@@ -11,7 +11,7 @@ import NetwokingClient
 @available(macOS 12.0, *)
 extension API {
     private struct GlobalEndpoint: EndpointClient  {
-        internal var provider: Networking
+        internal var provider: Networking<HTTPClientError>
         
         public struct Global: Endpoint {
             public var body: Data?

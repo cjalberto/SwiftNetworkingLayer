@@ -11,7 +11,7 @@ import NetwokingClient
 
 
 public protocol EndpointClient {
-    var provider: Networking { get }
+    var provider: Networking<HTTPClientError> { get }
     
     @available(macOS 10.15, *)
     func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, HTTPClientError>) -> ())
