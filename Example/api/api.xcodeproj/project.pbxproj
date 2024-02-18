@@ -21,7 +21,7 @@
 		458BAF992B788DE8008FEDAC /* Enviroment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF982B788DE8008FEDAC /* Enviroment.swift */; };
 		458BAF9D2B788F8C008FEDAC /* BaseUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF9C2B788F8B008FEDAC /* BaseUrl.swift */; };
 		458BAF9F2B78914B008FEDAC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF9E2B78914B008FEDAC /* API.swift */; };
-		458BAFBA2B794A73008FEDAC /* NetwokingClient in Frameworks */ = {isa = PBXBuildFile; productRef = 458BAFB92B794A73008FEDAC /* NetwokingClient */; };
+		45B5BF122B82877400D1FCD9 /* NetwokingClient in Frameworks */ = {isa = PBXBuildFile; productRef = 45B5BF112B82877400D1FCD9 /* NetwokingClient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				458BAFBA2B794A73008FEDAC /* NetwokingClient in Frameworks */,
+				45B5BF122B82877400D1FCD9 /* NetwokingClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,7 +193,7 @@
 			);
 			name = api;
 			packageProductDependencies = (
-				458BAFB92B794A73008FEDAC /* NetwokingClient */,
+				45B5BF112B82877400D1FCD9 /* NetwokingClient */,
 			);
 			productName = api;
 			productReference = 458BAF532B788BF4008FEDAC /* api.app */;
@@ -268,7 +268,7 @@
 			);
 			mainGroup = 458BAF4A2B788BF4008FEDAC;
 			packageReferences = (
-				458BAFB82B794A73008FEDAC /* XCRemoteSwiftPackageReference "SwiftNetworkingLayer" */,
+				45B5BF102B82877400D1FCD9 /* XCRemoteSwiftPackageReference "SwiftNetworkingLayer" */,
 			);
 			productRefGroup = 458BAF542B788BF4008FEDAC /* Products */;
 			projectDirPath = "";
@@ -664,20 +664,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		458BAFB82B794A73008FEDAC /* XCRemoteSwiftPackageReference "SwiftNetworkingLayer" */ = {
+		45B5BF102B82877400D1FCD9 /* XCRemoteSwiftPackageReference "SwiftNetworkingLayer" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/cjalberto/SwiftNetworkingLayer.git";
 			requirement = {
-				branch = main;
+				branch = develop;
 				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		458BAFB92B794A73008FEDAC /* NetwokingClient */ = {
+		45B5BF112B82877400D1FCD9 /* NetwokingClient */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 458BAFB82B794A73008FEDAC /* XCRemoteSwiftPackageReference "SwiftNetworkingLayer" */;
+			package = 45B5BF102B82877400D1FCD9 /* XCRemoteSwiftPackageReference "SwiftNetworkingLayer" */;
 			productName = NetwokingClient;
 		};
 /* End XCSwiftPackageProductDependency section */
