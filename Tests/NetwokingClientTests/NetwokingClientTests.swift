@@ -41,7 +41,7 @@ final class NetwokingClientTests: XCTestCase {
     // Test asynchronous request
     func testAsyncRequest() {
         let server = ServerFactory.createServer(for: "", baseURL: "https://rickandmortyapi.com/api")
-        let networking = Networking(provider: server)
+        let networking = Networking<HTTPClientError>(provider: server)
         let expectation = expectation(description: "Async request expectation")
         
         networking.request(endpoint: MockEndpoint()) { result in
@@ -60,8 +60,8 @@ final class NetwokingClientTests: XCTestCase {
     // Test synchronous request
     @available(iOS 15.0.0, *)
     func testSyncRequest() async {
-        let server = ServerFactory.createServer(for: "test", baseURL: "https://example.com")
-        let networking = Networking(provider: server)
+        let server = ServerFactory.createServer(for: "", baseURL: "https://rickandmortyapi.com/api")
+        let networking = Networking<HTTPClientError>(provider: server)
         
         let result = await networking.request(endpoint: MockEndpoint())
         
@@ -76,8 +76,8 @@ final class NetwokingClientTests: XCTestCase {
     // Test Combine request
     @available(iOS 13.0, *)
     func testCombineRequest() {
-        let server = ServerFactory.createServer(for: "test", baseURL: "https://example.com")
-        let networking = Networking(provider: server)
+        let server = ServerFactory.createServer(for: "", baseURL: "https://rickandmortyapi.com/api")
+        let networking = Networking<HTTPClientError>(provider: server)
         
         let publisher = networking.request(endpoint: MockEndpoint())
         

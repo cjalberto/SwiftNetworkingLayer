@@ -11,7 +11,7 @@ import NetwokingClient
 @available(macOS 12.0, *)
 extension API {
     private struct CoinsEndpoint: EndpointClient  {
-        internal var provider: Networking
+        internal var provider: Networking<HTTPClientError>
         
         public struct List: Endpoint {
             public var body: Data?

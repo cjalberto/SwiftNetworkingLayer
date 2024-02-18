@@ -23,7 +23,7 @@ let package = Package(
                 // Define dependencies for your target here...
             ],
             exclude: [
-                "Example"
+                "../Example"
             ]
         ),
         .testTarget(

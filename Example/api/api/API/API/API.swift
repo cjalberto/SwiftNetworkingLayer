@@ -11,7 +11,7 @@ import NetwokingClient
 
 @available(macOS 10.13, *)
 public protocol APIClient {
-    var provider: Networking { get }
+    var provider: Networking<HTTPClientError> { get }
     
     //Global
     func fetchGlobalCryptoCurrencies() async -> Result<CryptoCurrencyGlobalInfoDTO, HTTPClientError>
@@ -26,10 +26,11 @@ public protocol APIClient {
 
 @available(macOS 12.0, *)
 public struct API: APIClient {
-    public var provider: Networking
-    static var shared: API = API(provider: Networking(provider: ServerFactory.createServer(for: Environment.production.path, baseURL: BaseURL.network(version: "v3").description)))
+    public var provider: Networking<HTTPClientError>
     
-    public init(provider: Networking) {
+    static var shared: API = API(provider: Networking<HTTPClientError>(provider: ServerFactory.createServer(for: Environment.production.path, baseURL: BaseURL.network(version: "v3").description)))
+    
+    public init(provider: Networking<HTTPClientError>) {
         self.provider = provider
     }
 }
