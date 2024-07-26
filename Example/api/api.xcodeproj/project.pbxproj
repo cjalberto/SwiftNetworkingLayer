@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4570B08F2C52F50900555132 /* apiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4570B08E2C52F50900555132 /* apiTests.swift */; };
 		4583DE022BD02F4F005230AD /* HTTPClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4583DE012BD02F4F005230AD /* HTTPClientError.swift */; };
 		458BAF572B788BF4008FEDAC /* apiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF562B788BF4008FEDAC /* apiApp.swift */; };
 		458BAF5B2B788BF4008FEDAC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF5A2B788BF4008FEDAC /* ContentView.swift */; };
@@ -26,14 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		458BAF672B788BF5008FEDAC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 458BAF4B2B788BF4008FEDAC /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 458BAF522B788BF4008FEDAC;
-			remoteInfo = api;
-		};
-		458BAF712B788BF5008FEDAC /* PBXContainerItemProxy */ = {
+		4570B0902C52F50900555132 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 458BAF4B2B788BF4008FEDAC /* Project object */;
 			proxyType = 1;
@@ -43,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4570B08C2C52F50900555132 /* apiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = apiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4570B08E2C52F50900555132 /* apiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = apiTests.swift; sourceTree = "<group>"; };
 		4583DE012BD02F4F005230AD /* HTTPClientError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPClientError.swift; sourceTree = "<group>"; };
 		458BAF532B788BF4008FEDAC /* api.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = api.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		458BAF562B788BF4008FEDAC /* apiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = apiApp.swift; sourceTree = "<group>"; };
@@ -50,8 +46,6 @@
 		458BAF5C2B788BF5008FEDAC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		458BAF5F2B788BF5008FEDAC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		458BAF612B788BF5008FEDAC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		458BAF662B788BF5008FEDAC /* apiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = apiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		458BAF702B788BF5008FEDAC /* apiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = apiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		458BAF872B788C8F008FEDAC /* CoinsEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoinsEndpoint.swift; sourceTree = "<group>"; };
 		458BAF882B788C8F008FEDAC /* GlobalEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalEndpoint.swift; sourceTree = "<group>"; };
 		458BAF892B788C8F008FEDAC /* SimpleEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleEndpoint.swift; sourceTree = "<group>"; };
@@ -65,6 +59,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4570B0892C52F50900555132 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		458BAF502B788BF4008FEDAC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -73,27 +74,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		458BAF632B788BF5008FEDAC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		458BAF6D2B788BF5008FEDAC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4570B08D2C52F50900555132 /* apiTests */ = {
+			isa = PBXGroup;
+			children = (
+				4570B08E2C52F50900555132 /* apiTests.swift */,
+			);
+			path = apiTests;
+			sourceTree = "<group>";
+		};
 		458BAF4A2B788BF4008FEDAC = {
 			isa = PBXGroup;
 			children = (
 				458BAF552B788BF4008FEDAC /* api */,
+				4570B08D2C52F50900555132 /* apiTests */,
 				458BAF542B788BF4008FEDAC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,8 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				458BAF532B788BF4008FEDAC /* api.app */,
-				458BAF662B788BF5008FEDAC /* apiTests.xctest */,
-				458BAF702B788BF5008FEDAC /* apiUITests.xctest */,
+				4570B08C2C52F50900555132 /* apiTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -182,6 +177,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		4570B08B2C52F50900555132 /* apiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4570B0922C52F50900555132 /* Build configuration list for PBXNativeTarget "apiTests" */;
+			buildPhases = (
+				4570B0882C52F50900555132 /* Sources */,
+				4570B0892C52F50900555132 /* Frameworks */,
+				4570B08A2C52F50900555132 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4570B0912C52F50900555132 /* PBXTargetDependency */,
+			);
+			name = apiTests;
+			productName = apiTests;
+			productReference = 4570B08C2C52F50900555132 /* apiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		458BAF522B788BF4008FEDAC /* api */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 458BAF7A2B788BF5008FEDAC /* Build configuration list for PBXNativeTarget "api" */;
@@ -202,42 +215,6 @@
 			productReference = 458BAF532B788BF4008FEDAC /* api.app */;
 			productType = "com.apple.product-type.application";
 		};
-		458BAF652B788BF5008FEDAC /* apiTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 458BAF7D2B788BF5008FEDAC /* Build configuration list for PBXNativeTarget "apiTests" */;
-			buildPhases = (
-				458BAF622B788BF5008FEDAC /* Sources */,
-				458BAF632B788BF5008FEDAC /* Frameworks */,
-				458BAF642B788BF5008FEDAC /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				458BAF682B788BF5008FEDAC /* PBXTargetDependency */,
-			);
-			name = apiTests;
-			productName = apiTests;
-			productReference = 458BAF662B788BF5008FEDAC /* apiTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		458BAF6F2B788BF5008FEDAC /* apiUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 458BAF802B788BF5008FEDAC /* Build configuration list for PBXNativeTarget "apiUITests" */;
-			buildPhases = (
-				458BAF6C2B788BF5008FEDAC /* Sources */,
-				458BAF6D2B788BF5008FEDAC /* Frameworks */,
-				458BAF6E2B788BF5008FEDAC /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				458BAF722B788BF5008FEDAC /* PBXTargetDependency */,
-			);
-			name = apiUITests;
-			productName = apiUITests;
-			productReference = 458BAF702B788BF5008FEDAC /* apiUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -245,19 +222,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1520;
+				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					4570B08B2C52F50900555132 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 458BAF522B788BF4008FEDAC;
+					};
 					458BAF522B788BF4008FEDAC = {
 						CreatedOnToolsVersion = 15.2;
-					};
-					458BAF652B788BF5008FEDAC = {
-						CreatedOnToolsVersion = 15.2;
-						TestTargetID = 458BAF522B788BF4008FEDAC;
-					};
-					458BAF6F2B788BF5008FEDAC = {
-						CreatedOnToolsVersion = 15.2;
-						TestTargetID = 458BAF522B788BF4008FEDAC;
 					};
 				};
 			};
@@ -278,13 +251,19 @@
 			projectRoot = "";
 			targets = (
 				458BAF522B788BF4008FEDAC /* api */,
-				458BAF652B788BF5008FEDAC /* apiTests */,
-				458BAF6F2B788BF5008FEDAC /* apiUITests */,
+				4570B08B2C52F50900555132 /* apiTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		4570B08A2C52F50900555132 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		458BAF512B788BF4008FEDAC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -294,23 +273,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		458BAF642B788BF5008FEDAC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		458BAF6E2B788BF5008FEDAC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4570B0882C52F50900555132 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4570B08F2C52F50900555132 /* apiTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		458BAF4F2B788BF4008FEDAC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -331,36 +304,55 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		458BAF622B788BF5008FEDAC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		458BAF6C2B788BF5008FEDAC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		458BAF682B788BF5008FEDAC /* PBXTargetDependency */ = {
+		4570B0912C52F50900555132 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 458BAF522B788BF4008FEDAC /* api */;
-			targetProxy = 458BAF672B788BF5008FEDAC /* PBXContainerItemProxy */;
-		};
-		458BAF722B788BF5008FEDAC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 458BAF522B788BF4008FEDAC /* api */;
-			targetProxy = 458BAF712B788BF5008FEDAC /* PBXContainerItemProxy */;
+			targetProxy = 4570B0902C52F50900555132 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		4570B0932C52F50900555132 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8VG3M5D46N;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "carlos-jaramillo.apiTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/api.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/api";
+			};
+			name = Debug;
+		};
+		4570B0942C52F50900555132 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8VG3M5D46N;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "carlos-jaramillo.apiTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/api.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/api";
+			};
+			name = Release;
+		};
 		458BAF782B788BF5008FEDAC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -498,6 +490,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -533,6 +526,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportsDocumentBrowser = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -550,85 +544,18 @@
 			};
 			name = Release;
 		};
-		458BAF7E2B788BF5008FEDAC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8VG3M5D46N;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "carlos-jaramillo.apiTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/api.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/api";
-			};
-			name = Debug;
-		};
-		458BAF7F2B788BF5008FEDAC /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8VG3M5D46N;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "carlos-jaramillo.apiTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/api.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/api";
-			};
-			name = Release;
-		};
-		458BAF812B788BF5008FEDAC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8VG3M5D46N;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "carlos-jaramillo.apiUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = api;
-			};
-			name = Debug;
-		};
-		458BAF822B788BF5008FEDAC /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 8VG3M5D46N;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "carlos-jaramillo.apiUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = api;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4570B0922C52F50900555132 /* Build configuration list for PBXNativeTarget "apiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4570B0932C52F50900555132 /* Debug */,
+				4570B0942C52F50900555132 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		458BAF4E2B788BF4008FEDAC /* Build configuration list for PBXProject "api" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -643,24 +570,6 @@
 			buildConfigurations = (
 				458BAF7B2B788BF5008FEDAC /* Debug */,
 				458BAF7C2B788BF5008FEDAC /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		458BAF7D2B788BF5008FEDAC /* Build configuration list for PBXNativeTarget "apiTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				458BAF7E2B788BF5008FEDAC /* Debug */,
-				458BAF7F2B788BF5008FEDAC /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		458BAF802B788BF5008FEDAC /* Build configuration list for PBXNativeTarget "apiUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				458BAF812B788BF5008FEDAC /* Debug */,
-				458BAF822B788BF5008FEDAC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
