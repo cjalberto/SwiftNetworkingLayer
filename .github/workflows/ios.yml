@@ -39,7 +39,9 @@ jobs:
           bundle install
   
       - name: Install Fastlane
-        run: bundle exec fastlane tests
+        run: |
+          cd Example/api
+          bundle exec fastlane tests
 
       
       
