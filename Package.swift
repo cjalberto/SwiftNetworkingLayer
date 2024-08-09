@@ -17,7 +17,7 @@ let package = Package(
         .target(
             name: "NetwokingClient",
             dependencies: [],
-            exclude: ["../Example"]  // Adjust this path to correctly exclude the Example directory.
+            exclude: ["Example"]
         ),
         .testTarget(
             name: "NetwokingClientTests",
