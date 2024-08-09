@@ -13,9 +13,9 @@
 		458BAF5B2B788BF4008FEDAC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF5A2B788BF4008FEDAC /* ContentView.swift */; };
 		458BAF5D2B788BF5008FEDAC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 458BAF5C2B788BF5008FEDAC /* Assets.xcassets */; };
 		458BAF602B788BF5008FEDAC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 458BAF5F2B788BF5008FEDAC /* Preview Assets.xcassets */; };
-		458BAF8A2B788C8F008FEDAC /* CoinsEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF872B788C8F008FEDAC /* CoinsEndpoint.swift */; };
-		458BAF8B2B788C8F008FEDAC /* GlobalEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF882B788C8F008FEDAC /* GlobalEndpoint.swift */; };
-		458BAF8C2B788C8F008FEDAC /* SimpleEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF892B788C8F008FEDAC /* SimpleEndpoint.swift */; };
+		458BAF8A2B788C8F008FEDAC /* CoinsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF872B788C8F008FEDAC /* CoinsClient.swift */; };
+		458BAF8B2B788C8F008FEDAC /* GlobalClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF882B788C8F008FEDAC /* GlobalClient.swift */; };
+		458BAF8C2B788C8F008FEDAC /* SimpleClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF892B788C8F008FEDAC /* SimpleClient.swift */; };
 		458BAF902B788C9A008FEDAC /* EndpointClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF8F2B788C9A008FEDAC /* EndpointClient.swift */; };
 		458BAF952B788CA9008FEDAC /* CriptoCurrencyPriceInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF922B788CA9008FEDAC /* CriptoCurrencyPriceInfoDTO.swift */; };
 		458BAF962B788CA9008FEDAC /* CriptoCurrencyBasicDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF932B788CA9008FEDAC /* CriptoCurrencyBasicDTO.swift */; };
@@ -46,9 +46,9 @@
 		458BAF5C2B788BF5008FEDAC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		458BAF5F2B788BF5008FEDAC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		458BAF612B788BF5008FEDAC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		458BAF872B788C8F008FEDAC /* CoinsEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoinsEndpoint.swift; sourceTree = "<group>"; };
-		458BAF882B788C8F008FEDAC /* GlobalEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalEndpoint.swift; sourceTree = "<group>"; };
-		458BAF892B788C8F008FEDAC /* SimpleEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleEndpoint.swift; sourceTree = "<group>"; };
+		458BAF872B788C8F008FEDAC /* CoinsClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoinsClient.swift; sourceTree = "<group>"; };
+		458BAF882B788C8F008FEDAC /* GlobalClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalClient.swift; sourceTree = "<group>"; };
+		458BAF892B788C8F008FEDAC /* SimpleClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleClient.swift; sourceTree = "<group>"; };
 		458BAF8F2B788C9A008FEDAC /* EndpointClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndpointClient.swift; sourceTree = "<group>"; };
 		458BAF922B788CA9008FEDAC /* CriptoCurrencyPriceInfoDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CriptoCurrencyPriceInfoDTO.swift; sourceTree = "<group>"; };
 		458BAF932B788CA9008FEDAC /* CriptoCurrencyBasicDTO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CriptoCurrencyBasicDTO.swift; sourceTree = "<group>"; };
@@ -137,9 +137,9 @@
 		458BAF862B788C6D008FEDAC /* EndpointClients */ = {
 			isa = PBXGroup;
 			children = (
-				458BAF872B788C8F008FEDAC /* CoinsEndpoint.swift */,
-				458BAF882B788C8F008FEDAC /* GlobalEndpoint.swift */,
-				458BAF892B788C8F008FEDAC /* SimpleEndpoint.swift */,
+				458BAF872B788C8F008FEDAC /* CoinsClient.swift */,
+				458BAF882B788C8F008FEDAC /* GlobalClient.swift */,
+				458BAF892B788C8F008FEDAC /* SimpleClient.swift */,
 			);
 			path = EndpointClients;
 			sourceTree = "<group>";
@@ -289,17 +289,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				458BAF952B788CA9008FEDAC /* CriptoCurrencyPriceInfoDTO.swift in Sources */,
-				458BAF8C2B788C8F008FEDAC /* SimpleEndpoint.swift in Sources */,
+				458BAF8C2B788C8F008FEDAC /* SimpleClient.swift in Sources */,
 				458BAF9D2B788F8C008FEDAC /* BaseUrl.swift in Sources */,
 				458BAF992B788DE8008FEDAC /* Enviroment.swift in Sources */,
 				458BAF572B788BF4008FEDAC /* apiApp.swift in Sources */,
 				458BAF9F2B78914B008FEDAC /* API.swift in Sources */,
-				458BAF8B2B788C8F008FEDAC /* GlobalEndpoint.swift in Sources */,
+				458BAF8B2B788C8F008FEDAC /* GlobalClient.swift in Sources */,
 				458BAF972B788CA9008FEDAC /* CryptoCurrencyGlobalInfoDTO.swift in Sources */,
 				4583DE022BD02F4F005230AD /* HTTPClientError.swift in Sources */,
 				458BAF5B2B788BF4008FEDAC /* ContentView.swift in Sources */,
 				458BAF962B788CA9008FEDAC /* CriptoCurrencyBasicDTO.swift in Sources */,
-				458BAF8A2B788C8F008FEDAC /* CoinsEndpoint.swift in Sources */,
+				458BAF8A2B788C8F008FEDAC /* CoinsClient.swift in Sources */,
 				458BAF902B788C9A008FEDAC /* EndpointClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

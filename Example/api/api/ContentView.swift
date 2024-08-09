@@ -11,7 +11,7 @@ struct ContentView: View {
     var body: some View {        
         Button("call service") {
             Task {
-                let result = await API.shared.fetchGlobalCryptoCurrencies()
+                let result = await API.shared.coins.fetchCryptoCurrencyBasicInfo()
                 switch result {
                 case .success(let value):
                     print("Success! Value: \(value)")
