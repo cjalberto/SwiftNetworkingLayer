@@ -1,4 +1,5 @@
 {
+  "originHash" : "f233703c2c315f5a0a37ccc14d8ab7a6e200701b74ddfc9f684366b9d5187b78",
   "pins" : [
     {
       "identity" : "swiftnetworkinglayer",
@@ -10,5 +11,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

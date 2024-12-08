@@ -4,8 +4,6 @@ import Foundation
 public struct Server {
     let url: String
     let environment: String
-    // Mandatory HTTP headers with default value for JSON content
-    var mandatoryHeaders: [String: String] = ["accept": "application/json"]
     
     // Computed property to return the base URL including environment if provided
     var baseURL: String {
@@ -19,8 +17,6 @@ public struct Server {
     fileprivate init(url: String, environment: String, mandatoryHeaders: [String : String]) {
         self.url = url
         self.environment = environment
-        // Merge provided mandatory headers with default ones
-        self.mandatoryHeaders = self.mandatoryHeaders.merging(mandatoryHeaders) { (_, new) in new }
     }
 }
 

@@ -106,10 +106,11 @@ struct Episode: Codable {
     }
 }
 
+
 // Mock Endpoint for testing
-struct MockEndpoint: Endpoint {
+struct MockEndpoint: JSONEndpointBase {
     typealias requestType = EpisodeResponse
-    var method: HTTPMethod = .get
+    var method: NetwokingClient.HTTPMethod = .get
     var path: String = "episode"
-    var body: Data? = nil
+    var body: Data?
 }
