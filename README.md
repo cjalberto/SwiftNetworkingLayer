@@ -10,6 +10,8 @@ SwiftNetworkingLayer is a Swift package designed to streamline networking operat
 - **Flexible Networking**: Implement synchronous, asynchronous, and Combine-based HTTP requests with the Networkable protocol.
 - **Server Configuration**: Configure server details such as base URL, environment, and mandatory headers with the Server structure and ServerFactory class.
 - **Injectable Request Configuration**: Customize per-request options (timeout, cache policy, etc.) by injecting your own `RequestConfiguration`, at the client level or per endpoint.
+- **Security**: Certificate/public-key pinning (`PinningPolicy`), a guard against accidentally using plaintext HTTP, a TLS-minimum-version helper, and an injectable `AuthTokenProvider` for bearer tokens with automatic refresh-and-retry on 401.
+- **Injectable Logging**: Observe every request/response through a `NetworkLogger`, off by default; `ConsoleNetworkLogger` is a reference implementation that redacts sensitive headers.
 
 ## Installation
 
@@ -105,6 +107,74 @@ struct UploadEndpoint: JSONEndpointBase {
 ```
 
 Session-level options that outlive a single request — `timeoutIntervalForResource`, `waitsForConnectivity`, `httpMaximumConnectionsPerHost`, TLS/certificate handling, etc. — aren't part of `RequestConfiguration`. Configure them on a `URLSessionConfiguration` and inject the resulting `URLSession` instead: `Networking(provider: server, session: URLSession(configuration: yourConfiguration))`.
+
+### Security
+
+`ServerFactory.createServer` requires `https://` by default — it traps with a clear message if `baseURL` uses plain `http://`, so a mistake in a `mandatoryHeaders`/`apiKey` setup can't accidentally ship sending secrets unencrypted. Pass `allowsInsecureHTTP: true` for local development against `http://localhost`:
+
+```swift
+let server = ServerFactory.createServer(for: "", baseURL: "http://localhost:3000", allowsInsecureHTTP: true)
+```
+
+#### Certificate / public-key pinning
+
+`PinningPolicy` decides whether to trust a server's TLS certificate for a given host. Two implementations are provided — pick a `PublicKeyPinningPolicy` if you want pins to survive certificate renewal (recommended), or a `CertificatePinningPolicy` if you'd rather pin the exact certificate:
+
+```swift
+// Generate the pin once from your server's certificate:
+let pin = PublicKeyPinningPolicy.pin(forCertificateData: certificateDERData)!
+
+let policy = PublicKeyPinningPolicy(pinnedHashes: ["api.example.com": [pin]])
+let session = URLSession(configuration: .default, delegate: PinnedSessionDelegate(policy: policy), delegateQueue: nil)
+let networking = Networking<HTTPClientError>(provider: server, session: session)
+```
+
+No changes to `Networking` are needed — pinning plugs in through the same `session` injection point used for any other `URLSession` customization. A connection is only trusted when **both** the system's own certificate-chain validation and your `PinningPolicy` agree.
+
+#### Minimum TLS version
+
+```swift
+let session = URLSession(configuration: SecureSessionConfiguration.make(minimumTLSVersion: .TLSv12))
+let networking = Networking<HTTPClientError>(provider: server, session: session)
+```
+
+#### Bearer tokens with automatic refresh
+
+Implement `AuthTokenProvider` to attach `Authorization: Bearer <token>` to every request and refresh it automatically the first time a request comes back `401 Unauthorized` (retried exactly once):
+
+```swift
+final class MyAuthTokenProvider: AuthTokenProvider {
+    func currentToken(completion: @escaping (String?) -> Void) {
+        completion(KeychainTokenStore.shared.accessToken)
+    }
+
+    func refreshToken(completion: @escaping (String?) -> Void) {
+        // Call your refresh endpoint, store the new token, then hand it back.
+        AuthService.refresh { newToken in completion(newToken) }
+    }
+}
+
+let networking = Networking<HTTPClientError>(provider: server, authTokenProvider: MyAuthTokenProvider())
+```
+
+### Logging
+
+`Networking` reports every request's lifecycle (`willSend`, `didReceive`, `didFail`) to an injected `NetworkLogger`. It's `nil` by default — no logging happens, and enabling it never happens by accident:
+
+```swift
+let networking = Networking<HTTPClientError>(provider: server, logger: ConsoleNetworkLogger())
+```
+
+`ConsoleNetworkLogger` redacts sensitive headers before printing — by default `Authorization`, `api-key`, `Cookie`, and `Set-Cookie` (add your own, e.g. a custom session header, via its initializer) — and only prints body sizes, not content, unless you opt into `bodyLoggingPolicy: .always` for local debugging:
+
+```swift
+let logger = ConsoleNetworkLogger(
+    redactedHeaders: ["Authorization", "api-key", "X-Session-Token"],
+    bodyLoggingPolicy: .always // Prints request/response bodies as text — local debugging only.
+)
+```
+
+Implement `NetworkLogger` yourself to send events to `os.Logger`, Crashlytics breadcrumbs, or anywhere else — you receive the raw `URLRequest`/`Data`, so redact anything sensitive the same way `ConsoleNetworkLogger` does before writing it anywhere persistent.
 
 ### Implement Error Handling
 

@@ -30,6 +30,27 @@ final class NetworkingClientTests: XCTestCase {
         }
     }
 
+    /// Returns a different response on each successive request, repeating the last one
+    /// once the list is exhausted. Used to test the 401-then-refresh-then-retry flow.
+    private func stubSequence(_ responses: [(statusCode: Int, body: Data?)]) {
+        var remaining = responses
+        MockURLProtocol.requestHandler = { request in
+            let next = remaining.isEmpty ? responses.last! : remaining.removeFirst()
+            let response = HTTPURLResponse(url: request.url!, statusCode: next.statusCode, httpVersion: nil, headerFields: nil)!
+            return (response, next.body)
+        }
+    }
+
+    private func makeAuthenticatedNetworking(authTokenProvider: AuthTokenProvider) -> Networking<HTTPClientError> {
+        let sessionConfiguration = URLSessionConfiguration.ephemeral
+        sessionConfiguration.protocolClasses = [MockURLProtocol.self]
+        return Networking<HTTPClientError>(
+            provider: server,
+            session: URLSession(configuration: sessionConfiguration),
+            authTokenProvider: authTokenProvider
+        )
+    }
+
     // MARK: - Success
 
     func testAsyncRequest() {
@@ -243,6 +264,143 @@ final class NetworkingClientTests: XCTestCase {
 
         XCTAssertEqual(capturedRequest?.timeoutInterval, 120)
     }
+
+    // MARK: - AuthTokenProvider
+
+    func testAuthTokenProviderAttachesBearerHeaderToEveryRequest() {
+        var capturedRequest: URLRequest?
+        MockURLProtocol.requestHandler = { request in
+            capturedRequest = request
+            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (response, sampleEpisodeJSON)
+        }
+
+        let authProvider = RecordingAuthTokenProvider(tokenToReturn: "initial-token", refreshedTokenToReturn: nil)
+        let authenticatedNetworking = makeAuthenticatedNetworking(authTokenProvider: authProvider)
+
+        let expectation = expectation(description: "auth header expectation")
+        authenticatedNetworking.request(endpoint: MockEndpoint()) { _ in expectation.fulfill() }
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(capturedRequest?.value(forHTTPHeaderField: "Authorization"), "Bearer initial-token")
+    }
+
+    @available(iOS 15.0, *)
+    func testAuthTokenProviderRefreshesAndRetriesOnceAfter401() async {
+        stubSequence([(401, nil), (200, sampleEpisodeJSON)])
+
+        let authProvider = RecordingAuthTokenProvider(tokenToReturn: "expired-token", refreshedTokenToReturn: "fresh-token")
+        let authenticatedNetworking = makeAuthenticatedNetworking(authTokenProvider: authProvider)
+
+        let result = await authenticatedNetworking.request(endpoint: MockEndpoint())
+
+        switch result {
+        case .success(let episodes):
+            XCTAssertEqual(episodes.results.first?.name, "Sample")
+        case .failure(let error):
+            XCTFail("Expected success after refreshing the token, got \(error)")
+        }
+        XCTAssertEqual(authProvider.refreshTokenCallCount, 1)
+    }
+
+    @available(iOS 13.0, *)
+    func testAuthTokenProviderRefreshesAndRetriesOnceAfter401ViaCombine() {
+        stubSequence([(401, nil), (200, sampleEpisodeJSON)])
+
+        let authProvider = RecordingAuthTokenProvider(tokenToReturn: "expired-token", refreshedTokenToReturn: "fresh-token")
+        let authenticatedNetworking = makeAuthenticatedNetworking(authTokenProvider: authProvider)
+
+        let expectation = XCTestExpectation(description: "combine refresh expectation")
+        var received: EpisodeResponse?
+        let cancellable = authenticatedNetworking.request(endpoint: MockEndpoint())
+            .sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    XCTFail("Unexpected error: \(error.localizedDescription)")
+                }
+                expectation.fulfill()
+            }, receiveValue: { received = $0 })
+
+        wait(for: [expectation], timeout: 2)
+        XCTAssertEqual(received?.results.first?.name, "Sample")
+        XCTAssertEqual(authProvider.refreshTokenCallCount, 1)
+        cancellable.cancel()
+    }
+
+    @available(iOS 15.0, *)
+    func testAuthTokenProviderOnlyRetriesOnce() async {
+        stub(statusCode: 401, body: nil) // Every attempt, including the retry, comes back 401.
+
+        let authProvider = RecordingAuthTokenProvider(tokenToReturn: "expired-token", refreshedTokenToReturn: "still-bad-token")
+        let authenticatedNetworking = makeAuthenticatedNetworking(authTokenProvider: authProvider)
+
+        let result = await authenticatedNetworking.request(endpoint: MockEndpoint())
+
+        switch result {
+        case .success:
+            XCTFail("Expected a failure")
+        case .failure(let error):
+            guard case .unauthorized = error else {
+                return XCTFail("Expected .unauthorized, got \(error)")
+            }
+        }
+        XCTAssertEqual(authProvider.refreshTokenCallCount, 1) // Not retried a second time.
+    }
+
+    // MARK: - NetworkLogger
+
+    @available(iOS 15.0, *)
+    func testLoggerReceivesWillSendThenDidReceiveOnSuccess() async {
+        stub(body: sampleEpisodeJSON)
+
+        let spyLogger = SpyNetworkLogger()
+        let sessionConfiguration = URLSessionConfiguration.ephemeral
+        sessionConfiguration.protocolClasses = [MockURLProtocol.self]
+        let loggedNetworking = Networking<HTTPClientError>(
+            provider: server,
+            session: URLSession(configuration: sessionConfiguration),
+            logger: spyLogger
+        )
+
+        _ = await loggedNetworking.request(endpoint: MockEndpoint())
+
+        XCTAssertEqual(spyLogger.events.count, 2)
+        guard case .willSend = spyLogger.events.first else {
+            return XCTFail("Expected the first event to be .willSend, got \(String(describing: spyLogger.events.first))")
+        }
+        guard case .didReceive(_, let response, _, _) = spyLogger.events.last else {
+            return XCTFail("Expected the last event to be .didReceive, got \(String(describing: spyLogger.events.last))")
+        }
+        XCTAssertEqual(response.statusCode, 200)
+    }
+
+    @available(iOS 15.0, *)
+    func testLoggerReceivesDidFailOnTransportError() async {
+        stub(body: nil, error: URLError(.notConnectedToInternet))
+
+        let spyLogger = SpyNetworkLogger()
+        let sessionConfiguration = URLSessionConfiguration.ephemeral
+        sessionConfiguration.protocolClasses = [MockURLProtocol.self]
+        let loggedNetworking = Networking<HTTPClientError>(
+            provider: server,
+            session: URLSession(configuration: sessionConfiguration),
+            logger: spyLogger
+        )
+
+        _ = await loggedNetworking.request(endpoint: MockEndpoint())
+
+        guard case .didFail = spyLogger.events.last else {
+            return XCTFail("Expected the last event to be .didFail, got \(String(describing: spyLogger.events.last))")
+        }
+    }
+
+    func testNoLoggingHappensWhenNoLoggerIsInjected() {
+        // `networking` (from setUp) has no logger. Not crashing and completing normally
+        // is the assertion: logging must be entirely opt-in.
+        stub(body: sampleEpisodeJSON)
+        let expectation = expectation(description: "no-logger expectation")
+        networking.request(endpoint: MockEndpoint()) { _ in expectation.fulfill() }
+        waitForExpectations(timeout: 2, handler: nil)
+    }
 }
 
 private let sampleEpisodeJSON = Data("""
@@ -299,4 +457,34 @@ private struct LongTimeoutEndpoint: JSONEndpointBase {
     var path: String = "episode"
     var body: Data?
     var configuration: RequestConfiguration? { LongTimeoutConfiguration() }
+}
+
+private final class RecordingAuthTokenProvider: AuthTokenProvider {
+    let tokenToReturn: String?
+    let refreshedTokenToReturn: String?
+    private(set) var currentTokenCallCount = 0
+    private(set) var refreshTokenCallCount = 0
+
+    init(tokenToReturn: String?, refreshedTokenToReturn: String?) {
+        self.tokenToReturn = tokenToReturn
+        self.refreshedTokenToReturn = refreshedTokenToReturn
+    }
+
+    func currentToken(completion: @escaping (String?) -> Void) {
+        currentTokenCallCount += 1
+        completion(tokenToReturn)
+    }
+
+    func refreshToken(completion: @escaping (String?) -> Void) {
+        refreshTokenCallCount += 1
+        completion(refreshedTokenToReturn)
+    }
+}
+
+private final class SpyNetworkLogger: NetworkLogger {
+    private(set) var events: [NetworkLogEvent] = []
+
+    func log(_ event: NetworkLogEvent) {
+        events.append(event)
+    }
 }

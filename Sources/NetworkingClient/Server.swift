@@ -28,10 +28,24 @@ public class ServerFactory {
     ///
     /// - Parameters:
     ///   - environment: A path segment appended after the base URL (e.g. `"staging"`). Pass `""` for none.
-    ///   - baseURL: The server's base URL, without a trailing slash.
+    ///   - baseURL: The server's base URL, without a trailing slash. Must use `https://` unless `allowsInsecureHTTP` is `true`.
     ///   - apiKey: If provided, sent as the `api-key` header on every request made against this server.
     ///   - additionalHeaders: Extra headers sent on every request made against this server.
-    public static func createServer(for environment: String, baseURL: String, apiKey: String? = nil, additionalHeaders: [String: String] = [:]) -> Server {
+    ///   - allowsInsecureHTTP: Opt-in to allow a plaintext `http://` baseURL (e.g. for local
+    ///     development). Defaults to `false`, since sending `apiKey`/`additionalHeaders` over
+    ///     plain HTTP exposes them to anyone on the network path.
+    public static func createServer(
+        for environment: String,
+        baseURL: String,
+        apiKey: String? = nil,
+        additionalHeaders: [String: String] = [:],
+        allowsInsecureHTTP: Bool = false
+    ) -> Server {
+        precondition(
+            allowsInsecureHTTP || baseURL.lowercased().hasPrefix("https://"),
+            "Server baseURL must use https:// (got \"\(baseURL)\"). Pass allowsInsecureHTTP: true if this is intentional, e.g. local development."
+        )
+
         var headers = additionalHeaders
 
         if let apiKey = apiKey {
