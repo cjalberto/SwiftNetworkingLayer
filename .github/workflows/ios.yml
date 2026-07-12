@@ -1,47 +1,83 @@
-name: iOS starter workflow
+name: Build and Test
 
 on:
+  push:
+    branches: [ "main", "develop" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
 
 jobs:
-  build:
-    name: Build and Test default scheme using any available iPhone simulator
+  test-package:
+    name: Build and test the NetworkingClient package
     runs-on: macos-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Select Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+      - name: Show Swift/Xcode version
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Cache SwiftPM dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            .build
+            ~/Library/Caches/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Build
+        run: swift build
+
+      - name: Test
+        run: swift test
+
+  test-example-app:
+    name: Build and test the Example app (via fastlane)
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        run: |
+          if [ -d "/Applications/Xcode_15.4.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_15.4.app
+          else
+            echo "Xcode 15.4 not found on this runner image, using the default Xcode instead."
+          fi
+          xcodebuild -version
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.0'
-  
+
       - name: Cache Ruby gems
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ runner.os }}-gems-${{ hashFiles('Example/api/Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-gems-
-  
+
       - name: Configure Bundler path
-        run: bundle config set path 'vendor/bundle'
-  
+        run: |
+          cd Example/api
+          bundle config set path 'vendor/bundle'
+
       - name: Install dependencies
         run: |
           cd Example/api
           gem install bundler
           bundle install
-  
-      - name: Install Fastlane
+
+      - name: Run tests via Fastlane
         run: |
           cd Example/api
           bundle exec fastlane tests
-
-      
-      
