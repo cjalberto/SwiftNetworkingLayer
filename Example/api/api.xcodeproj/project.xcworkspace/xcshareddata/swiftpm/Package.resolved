@@ -1,5 +1,4 @@
 {
-  "originHash" : "f233703c2c315f5a0a37ccc14d8ab7a6e200701b74ddfc9f684366b9d5187b78",
   "pins" : [
     {
       "identity" : "swiftnetworkinglayer",
@@ -7,7 +6,7 @@
       "location" : "https://github.com/cjalberto/SwiftNetworkingLayer.git",
       "state" : {
         "branch" : "develop",
-        "revision" : "9168197abaca3423a161f273002b9cf0268e1100"
+        "revision" : "7741678c3c474e7d5494003ce643c3e0a867b362"
       }
     }
   ],

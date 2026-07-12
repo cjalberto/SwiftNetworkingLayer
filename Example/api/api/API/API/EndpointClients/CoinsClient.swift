@@ -9,7 +9,7 @@ protocol CointClientProtocol {
 public struct CoinsClient: EndpointClient {
     public var provider: Networking<HTTPClientError>
     
-    public struct List: Endpoint {
+    public struct List: JSONEndpointBase {
         public var body: Data?
         
         public typealias requestType = [CryptoCurrencyBasicDTO]

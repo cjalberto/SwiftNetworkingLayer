@@ -9,7 +9,7 @@ protocol GlobalClientProtocol {
 public struct GlobalClient: EndpointClient {
     public var provider: Networking<HTTPClientError>
     
-    public struct Global: Endpoint {
+    public struct Global: JSONEndpointBase {
         public var body: Data?
         
         public typealias requestType = CryptoCurrencyGlobalInfoDTO

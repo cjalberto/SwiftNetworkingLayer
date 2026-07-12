@@ -9,7 +9,7 @@ protocol SimpleClientProtocol {
 public struct SimpleClient: EndpointClient {
     public var provider: Networking<HTTPClientError>
     
-    public struct Price: Endpoint {
+    public struct Price: JSONEndpointBase {
         public var body: Data?
         
         public typealias requestType = CryptocurrencyPriceInfoDTO
