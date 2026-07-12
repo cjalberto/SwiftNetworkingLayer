@@ -182,6 +182,67 @@ final class NetworkingClientTests: XCTestCase {
         let query = MockEndpoint().queryString(from: ["q": "a b&c"])
         XCTAssertEqual(query, "q=a%20b%26c")
     }
+
+    // MARK: - Request configuration
+
+    func testDefaultConfigurationAppliesURLRequestDefaults() {
+        let request = MockEndpoint().urlRequest(server: server)
+
+        XCTAssertEqual(request?.timeoutInterval, 60)
+        XCTAssertEqual(request?.cachePolicy, .useProtocolCachePolicy)
+    }
+
+    func testExplicitConfigurationOverridesDefaultTimeout() {
+        let request = MockEndpoint().urlRequest(server: server, configuration: ShortTimeoutConfiguration())
+
+        XCTAssertEqual(request?.timeoutInterval, 5)
+    }
+
+    func testClientWideConfigurationIsAppliedToEveryRequest() {
+        var capturedRequest: URLRequest?
+        MockURLProtocol.requestHandler = { request in
+            capturedRequest = request
+            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (response, sampleEpisodeJSON)
+        }
+
+        let sessionConfiguration = URLSessionConfiguration.ephemeral
+        sessionConfiguration.protocolClasses = [MockURLProtocol.self]
+        let configuredNetworking = Networking<HTTPClientError>(
+            provider: server,
+            session: URLSession(configuration: sessionConfiguration),
+            configuration: ShortTimeoutConfiguration()
+        )
+
+        let expectation = expectation(description: "client-wide configuration expectation")
+        configuredNetworking.request(endpoint: MockEndpoint()) { _ in expectation.fulfill() }
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(capturedRequest?.timeoutInterval, 5)
+    }
+
+    func testEndpointConfigurationOverridesClientWideConfiguration() {
+        var capturedRequest: URLRequest?
+        MockURLProtocol.requestHandler = { request in
+            capturedRequest = request
+            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (response, sampleEpisodeJSON)
+        }
+
+        let sessionConfiguration = URLSessionConfiguration.ephemeral
+        sessionConfiguration.protocolClasses = [MockURLProtocol.self]
+        let configuredNetworking = Networking<HTTPClientError>(
+            provider: server,
+            session: URLSession(configuration: sessionConfiguration),
+            configuration: ShortTimeoutConfiguration() // client default: 5s
+        )
+
+        let expectation = expectation(description: "endpoint configuration expectation")
+        configuredNetworking.request(endpoint: LongTimeoutEndpoint()) { _ in expectation.fulfill() } // endpoint overrides to 120s
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(capturedRequest?.timeoutInterval, 120)
+    }
 }
 
 private let sampleEpisodeJSON = Data("""
@@ -221,4 +282,21 @@ struct MockEndpoint: JSONEndpointBase {
     var method: NetworkingClient.HTTPMethod = .get
     var path: String = "episode"
     var body: Data?
+}
+
+private struct ShortTimeoutConfiguration: RequestConfiguration {
+    var timeoutInterval: TimeInterval { 5 }
+}
+
+private struct LongTimeoutConfiguration: RequestConfiguration {
+    var timeoutInterval: TimeInterval { 120 }
+}
+
+/// An endpoint that overrides the client's default configuration with its own.
+private struct LongTimeoutEndpoint: JSONEndpointBase {
+    typealias requestType = EpisodeResponse
+    var method: NetworkingClient.HTTPMethod = .get
+    var path: String = "episode"
+    var body: Data?
+    var configuration: RequestConfiguration? { LongTimeoutConfiguration() }
 }

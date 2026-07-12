@@ -12,6 +12,10 @@ public protocol Networkable {
     /// The `URLSession` used to perform requests.
     var session: URLSession { get }
 
+    /// The default request configuration (timeout, cache policy, etc.) applied to every
+    /// request, unless a given `Endpoint` overrides it via its own `configuration`.
+    var configuration: RequestConfiguration { get }
+
     /// Performs the request and reports the result through `completion`.
     @available(macOS 10.15, *)
     func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, ErrorType>) -> Void)
@@ -29,16 +33,23 @@ public protocol Networkable {
 public class Networking<ErrorType: HTTPClientErrorProtocol>: Networkable {
     public let provider: Server
     public let session: URLSession
+    public let configuration: RequestConfiguration
 
-    public init(provider: Server, session: URLSession = .shared) {
+    public init(provider: Server, session: URLSession = .shared, configuration: RequestConfiguration = DefaultRequestConfiguration()) {
         self.provider = provider
         self.session = session
+        self.configuration = configuration
+    }
+
+    /// The endpoint's own configuration, if it defines one, otherwise this client's default.
+    private func effectiveConfiguration<E: Endpoint>(for endpoint: E) -> RequestConfiguration {
+        endpoint.configuration ?? self.configuration
     }
 
     @available(macOS 10.15, *)
     public func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, ErrorType>) -> Void) {
 
-        guard let request = endpoint.urlRequest(server: self.provider) else {
+        guard let request = endpoint.urlRequest(server: self.provider, configuration: effectiveConfiguration(for: endpoint)) else {
             completion(.failure(ErrorType.map(statusCode: InternalFailureCode.invalidURL.rawValue)))
             return
         }
@@ -75,7 +86,7 @@ public class Networking<ErrorType: HTTPClientErrorProtocol>: Networkable {
 
     @available(iOS 13.0, macOS 13.0, *)
     public func request<E: Endpoint>(endpoint: E) -> AnyPublisher<E.requestType, ErrorType> {
-        guard let request = endpoint.urlRequest(server: self.provider) else {
+        guard let request = endpoint.urlRequest(server: self.provider, configuration: effectiveConfiguration(for: endpoint)) else {
             return Fail(error: ErrorType.map(statusCode: InternalFailureCode.invalidURL.rawValue))
                 .eraseToAnyPublisher()
         }
@@ -112,7 +123,7 @@ public class Networking<ErrorType: HTTPClientErrorProtocol>: Networkable {
 
     @available(iOS 15.0, macOS 12.0, *)
     public func request<E: Endpoint>(endpoint: E) async -> Result<E.requestType, ErrorType> {
-        guard let request = endpoint.urlRequest(server: self.provider) else {
+        guard let request = endpoint.urlRequest(server: self.provider, configuration: effectiveConfiguration(for: endpoint)) else {
             return .failure(ErrorType.map(statusCode: InternalFailureCode.invalidURL.rawValue))
         }
 

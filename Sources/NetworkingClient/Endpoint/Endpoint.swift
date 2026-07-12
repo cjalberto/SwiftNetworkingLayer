@@ -22,12 +22,19 @@ public protocol Endpoint {
     /// The strategy used to decode the response body into `requestType`.
     var decoder: ResponseDecodable { get }
 
-    /// Builds the `URLRequest` for this endpoint against the given `server`.
-    func urlRequest(server: Server) -> URLRequest?
+    /// This endpoint's own request configuration (timeout, cache policy, etc.), if it
+    /// needs to override the `Networking` client's default. Returns `nil` to inherit
+    /// the client's configuration.
+    var configuration: RequestConfiguration? { get }
+
+    /// Builds the `URLRequest` for this endpoint against the given `server`, applying `configuration`.
+    func urlRequest(server: Server, configuration: RequestConfiguration) -> URLRequest?
 }
 
 extension Endpoint {
-    public func urlRequest(server: Server) -> URLRequest? {
+    public var configuration: RequestConfiguration? { nil }
+
+    public func urlRequest(server: Server, configuration: RequestConfiguration = DefaultRequestConfiguration()) -> URLRequest? {
         guard let url = URL(string: server.baseURL + path) else { return nil }
 
         var request = URLRequest(url: url)
@@ -35,6 +42,16 @@ extension Endpoint {
         request.httpBody = body
         // Endpoint headers take priority over the server's mandatory headers.
         request.allHTTPHeaderFields = server.mandatoryHeaders.merging(headers ?? [:]) { _, endpointValue in endpointValue }
+
+        request.timeoutInterval = configuration.timeoutInterval
+        request.cachePolicy = configuration.cachePolicy
+        request.allowsCellularAccess = configuration.allowsCellularAccess
+        request.httpShouldHandleCookies = configuration.httpShouldHandleCookies
+        // Only available from iOS 13 / macOS 10.15; this package's minimum deployment target is iOS 12.
+        if #available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, *) {
+            request.allowsExpensiveNetworkAccess = configuration.allowsExpensiveNetworkAccess
+            request.allowsConstrainedNetworkAccess = configuration.allowsConstrainedNetworkAccess
+        }
 
         return request
     }

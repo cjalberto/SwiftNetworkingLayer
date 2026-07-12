@@ -9,6 +9,7 @@ SwiftNetworkingLayer is a Swift package designed to streamline networking operat
 - **HTTP Method Representation**: Use the HTTPMethod type to work with standard HTTP methods.
 - **Flexible Networking**: Implement synchronous, asynchronous, and Combine-based HTTP requests with the Networkable protocol.
 - **Server Configuration**: Configure server details such as base URL, environment, and mandatory headers with the Server structure and ServerFactory class.
+- **Injectable Request Configuration**: Customize per-request options (timeout, cache policy, etc.) by injecting your own `RequestConfiguration`, at the client level or per endpoint.
 
 ## Installation
 
@@ -74,6 +75,36 @@ let result = await networking.request(endpoint: MyEndpoint())
 let cancellable = networking.request(endpoint: MyEndpoint())
     .sink(receiveCompletion: { _ in }, receiveValue: { response in })
 ```
+
+### Configure Requests
+
+Per-request options (timeout, cache policy, cellular/expensive/constrained network access, cookie handling) are defined by the `RequestConfiguration` protocol. Every property has a default, so you only override what you need:
+
+```swift
+struct SlowUploadConfiguration: RequestConfiguration {
+    var timeoutInterval: TimeInterval { 120 }
+}
+```
+
+Inject it at the client level to apply it to every request made through that `Networking` instance:
+
+```swift
+let networking = Networking<HTTPClientError>(provider: server, configuration: SlowUploadConfiguration())
+```
+
+Or override it for a single endpoint, which takes priority over the client's configuration:
+
+```swift
+struct UploadEndpoint: JSONEndpointBase {
+    typealias requestType = UploadResponse
+    var method: HTTPMethod = .post
+    var path: String = "upload"
+    var body: Data?
+    var configuration: RequestConfiguration? { SlowUploadConfiguration() }
+}
+```
+
+Session-level options that outlive a single request — `timeoutIntervalForResource`, `waitsForConnectivity`, `httpMaximumConnectionsPerHost`, TLS/certificate handling, etc. — aren't part of `RequestConfiguration`. Configure them on a `URLSessionConfiguration` and inject the resulting `URLSession` instead: `Networking(provider: server, session: URLSession(configuration: yourConfiguration))`.
 
 ### Implement Error Handling
 
