@@ -1,8 +1,11 @@
 name: Build and Test
 
 on:
+  # No push trigger for main: merges into main are fast-forwards from develop, so the
+  # commits are already identical to ones develop's push trigger just tested. The
+  # pull_request trigger below still validates a develop -> main PR before it merges.
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "develop" ]
   pull_request:
     branches: [ "main", "develop" ]
 
