@@ -23,7 +23,7 @@
 		458BAF992B788DE8008FEDAC /* Enviroment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF982B788DE8008FEDAC /* Enviroment.swift */; };
 		458BAF9D2B788F8C008FEDAC /* BaseUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF9C2B788F8B008FEDAC /* BaseUrl.swift */; };
 		458BAF9F2B78914B008FEDAC /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458BAF9E2B78914B008FEDAC /* API.swift */; };
-		45B5BF122B82877400D1FCD9 /* NetwokingClient in Frameworks */ = {isa = PBXBuildFile; productRef = 45B5BF112B82877400D1FCD9 /* NetwokingClient */; };
+		45B5BF122B82877400D1FCD9 /* NetworkingClient in Frameworks */ = {isa = PBXBuildFile; productRef = 45B5BF112B82877400D1FCD9 /* NetworkingClient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,7 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45B5BF122B82877400D1FCD9 /* NetwokingClient in Frameworks */,
+				45B5BF122B82877400D1FCD9 /* NetworkingClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,7 +209,7 @@
 			);
 			name = api;
 			packageProductDependencies = (
-				45B5BF112B82877400D1FCD9 /* NetwokingClient */,
+				45B5BF112B82877400D1FCD9 /* NetworkingClient */,
 			);
 			productName = api;
 			productReference = 458BAF532B788BF4008FEDAC /* api.app */;
@@ -588,10 +588,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		45B5BF112B82877400D1FCD9 /* NetwokingClient */ = {
+		45B5BF112B82877400D1FCD9 /* NetworkingClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 45B5BF102B82877400D1FCD9 /* XCRemoteSwiftPackageReference "SwiftNetworkingLayer" */;
-			productName = NetwokingClient;
+			productName = NetworkingClient;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

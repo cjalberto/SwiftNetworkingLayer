@@ -1,18 +1,11 @@
-//
-//  EndpointClient.swift
-//  
-//
-//  Created by Carlos Jaramillo on 2/10/24.
-//
-
 import Foundation
 import Combine
-import NetwokingClient
+import NetworkingClient
 
-
+/// A resource-specific client that forwards requests to a shared `Networking<HTTPClientError>`.
 public protocol EndpointClient {
     var provider: Networking<HTTPClientError> { get }
-    
+
     @available(macOS 10.15, *)
     func request<E: Endpoint>(endpoint: E, completion: @escaping (Result<E.requestType, HTTPClientError>) -> ())
     

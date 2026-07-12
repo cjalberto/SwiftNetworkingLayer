@@ -21,32 +21,64 @@ dependencies: [
 
 ## Usage
 
-### Define Endpoints
+### Define a Server
 
 ```swift
-struct MyEndpoint: Endpoint {
+import NetworkingClient
+
+let server = ServerFactory.createServer(
+    for: "production",
+    baseURL: "https://api.example.com",
+    apiKey: "your-api-key" // sent as the "api-key" header on every request
+)
+```
+
+### Define Endpoints
+
+`JSONEndpointBase` (or `XMLEndpointBase`) gives you the `Content-Type` and `decoder` for free, so you only need to define the method, path, and body:
+
+```swift
+struct MyRequest: Decodable { /* ... */ }
+
+struct MyEndpoint: JSONEndpointBase {
     typealias requestType = MyRequest
     var method: HTTPMethod = .get
-    var path: String = "/example"
+    var path: String = "example"
     var body: Data? = nil
 }
 ```
-### Make Requests:
-```swift
-let server = ServerFactory.createServer(for: "production", baseURL: "https://api.example.com")
-let networking = Networking(provider: server)
 
+### Make Requests
+
+`Networking` supports closures, Combine, and async/await using the same endpoint definition:
+
+```swift
+let networking = Networking<HTTPClientError>(provider: server)
+
+// Closure
 networking.request(endpoint: MyEndpoint()) { result in
     switch result {
-    case .success(let data):
+    case .success(let response):
         // Handle successful response
+        break
     case .failure(let error):
         // Handle error
+        break
     }
 }
+
+// async/await
+let result = await networking.request(endpoint: MyEndpoint())
+
+// Combine
+let cancellable = networking.request(endpoint: MyEndpoint())
+    .sink(receiveCompletion: { _ in }, receiveValue: { response in })
 ```
+
 ### Implement Error Handling
-The HTTPClientError enumeration, conforming to HTTPClientErrorProtocol, illustrates an exemplary implementation of detailed error handling. It includes an errorCode property that provides specific HTTP status codes or custom codes for various error scenarios:
+
+`HTTPClientError` (conforming to `HTTPClientErrorProtocol`) is a reference implementation. `map(statusCode:)` receives either a **real** HTTP status code returned by the server, or one of the `InternalFailureCode` values (negative codes defined by the library) for failures the client detects before getting a response — they never collide, because the two ranges never overlap. `map(underlyingError:)` preserves the real transport error (no connection, timeout, cancelled...).
+
 ```swift
 public enum HTTPClientError: HTTPClientErrorProtocol {
     case invalidURL
@@ -59,23 +91,31 @@ public enum HTTPClientError: HTTPClientErrorProtocol {
 
     public var errorCode: Int {
         switch self {
-        case .invalidURL:
-            return 500
-        case .requestFailed(let statusCode, _):
-            return statusCode
-        case .noData:
-            return 421
-        case .decodingFailed:
-            return 422
-        case .unauthorized:
-            return 601
-        case .noResponse:
-            return 501
-        case .generic:
-            return 400
+        case .invalidURL: return InternalFailureCode.invalidURL.rawValue
+        case .requestFailed(let statusCode, _): return statusCode
+        case .noData: return InternalFailureCode.noData.rawValue
+        case .decodingFailed: return InternalFailureCode.decodingFailed.rawValue
+        case .unauthorized: return 401
+        case .noResponse: return InternalFailureCode.noResponse.rawValue
+        case .generic: return 0
         }
     }
-    // Example mappings and descriptions omitted for brevity
+
+    public static func map(statusCode: Int) -> HTTPClientError {
+        switch statusCode {
+        case InternalFailureCode.invalidURL.rawValue: return .invalidURL
+        case InternalFailureCode.noData.rawValue: return .noData
+        case InternalFailureCode.decodingFailed.rawValue: return .decodingFailed
+        case InternalFailureCode.noResponse.rawValue: return .noResponse
+        case 401: return .unauthorized
+        default: return .requestFailed(statusCode: statusCode, message: "HTTP error \(statusCode)")
+        }
+    }
+
+    public static func map(underlyingError error: Error) -> HTTPClientError {
+        return .requestFailed(statusCode: (error as NSError).code, message: error.localizedDescription)
+    }
+    // Example descriptions omitted for brevity
 }
 ```
 

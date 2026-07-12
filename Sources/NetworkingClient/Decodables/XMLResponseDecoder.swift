@@ -1,15 +1,13 @@
-//
-//  XMLResponseDecoder.swift
-//  NetwokingClient
-//
-//  Created by Carlos Jaramillo on 12/8/24.
-//
-
 import Foundation
 
+/// Decodes response bodies as XML by flattening the document into a single-level
+/// `[String: String]` dictionary and re-decoding it through `JSONDecoder`.
+///
+/// This only supports flat XML documents: nested or repeated elements will overwrite
+/// each other in the intermediate dictionary.
 public struct XMLResponseDecoder: ResponseDecodable {
     public init() {}
-    
+
     public func decode<T: Decodable>(_ data: Data) throws -> T {
         let parser = XMLParser(data: data)
         let xmlDecoder = XMLDecoder<T>()
@@ -27,6 +25,8 @@ public struct XMLResponseDecoder: ResponseDecodable {
     }
 }
 
+/// `XMLParserDelegate` that flattens a flat XML document into a `[String: String]`
+/// dictionary, then decodes it into `T` via `JSONSerialization` + `JSONDecoder`.
 class XMLDecoder<T: Decodable>: NSObject, XMLParserDelegate {
     private var currentElement: String = ""
     private var currentValue: String = ""

@@ -1,8 +1,7 @@
-
 import Foundation
-import NetwokingClient
+import NetworkingClient
 
-// Enumeration representing various HTTP client errors
+/// Reference `HTTPClientErrorProtocol` conformance used by the test suite.
 public enum HTTPClientError: HTTPClientErrorProtocol {
     case invalidURL                         // The provided URL is not valid
     case requestFailed(statusCode: Int, message: String)  // The request failed with a specific status code and message
@@ -16,19 +15,19 @@ public enum HTTPClientError: HTTPClientErrorProtocol {
     public var errorCode: Int {
         switch self {
         case .invalidURL:
-            return 500
+            return InternalFailureCode.invalidURL.rawValue
         case .requestFailed(let statusCode, _):
             return statusCode
         case .noData:
-            return 421
+            return InternalFailureCode.noData.rawValue
         case .decodingFailed:
-            return 422
+            return InternalFailureCode.decodingFailed.rawValue
         case .unauthorized:
-            return 601
+            return 401
         case .noResponse:
-            return 501
+            return InternalFailureCode.noResponse.rawValue
         case .generic:
-            return 400
+            return 0
         }
     }
     
@@ -52,21 +51,28 @@ public enum HTTPClientError: HTTPClientErrorProtocol {
         }
     }
     
-    // Function to map status codes to corresponding HTTP client errors
+    // Function to map status codes to corresponding HTTP client errors.
+    // The InternalFailureCode cases (negative) are failures detected by the client before
+    // receiving a response; any other code is a real HTTP status code from the server.
     public static func map(statusCode: Int) -> HTTPClientError {
         switch statusCode {
-        case 500:
+        case InternalFailureCode.invalidURL.rawValue:
             return .invalidURL
-        case 421:
+        case InternalFailureCode.noData.rawValue:
             return .noData
-        case 422:
+        case InternalFailureCode.decodingFailed.rawValue:
             return .decodingFailed
-        case 501:
+        case InternalFailureCode.noResponse.rawValue:
             return .noResponse
-        case 601:
+        case 401:
             return .unauthorized
         default:
-            return .generic
+            return .requestFailed(statusCode: statusCode, message: "HTTP error \(statusCode)")
         }
+    }
+
+    // Function to map a transport-level error (no connection, timeout, cancelled...) preserving its original info
+    public static func map(underlyingError error: Error) -> HTTPClientError {
+        return .requestFailed(statusCode: (error as NSError).code, message: error.localizedDescription)
     }
 }

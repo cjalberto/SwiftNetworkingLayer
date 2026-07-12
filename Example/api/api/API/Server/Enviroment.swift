@@ -1,12 +1,6 @@
-//
-//  Enviroment.swift
-//  api
-//
-//  Created by Carlos Jaramillo on 2/11/24.
-//
-
 import Foundation
 
+/// The deployment environment used to build the server's environment path segment.
 enum Environment {
     case development
     case staging

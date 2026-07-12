@@ -1,6 +1,6 @@
 import Foundation
 
-
+/// The base URL to send requests against: the real CoinGecko API, a local backend, or a custom one.
 public enum BaseURL {
     case network(version: String)
     case local(version: String)

@@ -4,24 +4,23 @@
 import PackageDescription
 
 let package = Package(
-    name: "NetwokingClient",
+    name: "NetworkingClient",
     platforms: [
         .iOS(.v12)
     ],
     products: [
         .library(
-            name: "NetwokingClient",
-            targets: ["NetwokingClient"]),
+            name: "NetworkingClient",
+            targets: ["NetworkingClient"]),
     ],
     targets: [
         .target(
-            name: "NetwokingClient",
-            dependencies: [],
-            exclude: ["Example"]
+            name: "NetworkingClient",
+            dependencies: []
         ),
         .testTarget(
-            name: "NetwokingClientTests",
-            dependencies: ["NetwokingClient"]
+            name: "NetworkingClientTests",
+            dependencies: ["NetworkingClient"]
         ),
     ]
 )

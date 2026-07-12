@@ -1,18 +1,12 @@
-//
-//  SimpleClient.swift
-//
-//
-//  Created by Carlos Jaramillo on 2/3/24.
-//
-
 import Foundation
-import NetwokingClient
+import NetworkingClient
 
 protocol SimpleClientProtocol {
     func fetchCryptoCurrencyPriceInfo(id: String, vsCurrencies: String) async -> Result<CryptocurrencyPriceInfoDTO, HTTPClientError>
 }
 
-public struct SimpleClient: EndpointClient  {
+/// Fetches simple price data for one or more coins from the CoinGecko API.
+public struct SimpleClient: EndpointClient {
     public var provider: Networking<HTTPClientError>
     
     public struct Price: Endpoint {

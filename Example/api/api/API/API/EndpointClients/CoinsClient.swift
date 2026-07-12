@@ -1,18 +1,12 @@
-//
-//  CoinsClient.swift
-//
-//
-//  Created by Carlos Jaramillo on 2/4/24.
-//
-
 import Foundation
-import NetwokingClient
+import NetworkingClient
 
 protocol CointClientProtocol {
     func fetchCryptoCurrencyBasicInfo() async -> Result<[CryptoCurrencyBasicDTO], HTTPClientError>
 }
 
-public struct CoinsClient: EndpointClient  {
+/// Fetches the list of coins known to the CoinGecko API.
+public struct CoinsClient: EndpointClient {
     public var provider: Networking<HTTPClientError>
     
     public struct List: Endpoint {

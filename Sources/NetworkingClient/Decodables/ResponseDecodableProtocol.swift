@@ -1,12 +1,6 @@
-//
-//  ResponseDecodable.swift
-//  NetwokingClient
-//
-//  Created by Carlos Jaramillo on 12/8/24.
-//
-
 import Foundation
 
+/// A strategy for decoding a response body's raw `Data` into a concrete `Decodable` type.
 public protocol ResponseDecodable {
     func decode<T: Decodable>(_ data: Data) throws -> T
 }
