@@ -23,6 +23,10 @@ xcuserdata/
 Example/api/fastlane/report.xml
 Example/api/fastlane/test_output/
 
+# Bundler (local override of the gem install path, machine-specific)
+Example/api/.bundle/
+Example/api/vendor/
+
 # Other
 .idea/
 .vscode/
